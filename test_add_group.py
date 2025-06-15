@@ -9,7 +9,7 @@ import unittest, time, re
 
 class UntitledTestCase(unittest.TestCase):
     def setUp(self):
-        self.wd = webdriver.Chrome(executable_path=r'')
+        self.wd = webdriver.Firefox()
         self.wd.implicitly_wait(30)
 
     def test_untitled_test_case(self):
