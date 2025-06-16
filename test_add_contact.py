@@ -7,12 +7,11 @@ class test_add_contact(unittest.TestCase):
     def setUp(self):
         self.wd = webdriver.Firefox()
         self.wd.implicitly_wait(30)
-    
-    def test_add_contact(self):
-        wd = self.wd
-        # open home page
+
+    def open_home_page(self, wd):
         wd.get("http://localhost/addressbook/")
-        # login
+
+    def login(self, wd):
         wd.find_element_by_name("user").click()
         wd.find_element_by_name("user").clear()
         wd.find_element_by_name("user").send_keys("admin")
@@ -20,7 +19,8 @@ class test_add_contact(unittest.TestCase):
         wd.find_element_by_name("pass").clear()
         wd.find_element_by_name("pass").send_keys("secret")
         wd.find_element_by_xpath("//input[@value='Login']").click()
-        # create contact
+
+    def create_contact(self, wd):
         # init contact creation
         wd.find_element_by_link_text("add new").click()
         # fill contact form
@@ -102,19 +102,29 @@ class test_add_contact(unittest.TestCase):
         wd.find_element_by_name("byear").send_keys("1911")
         # anniversary
         Select(wd.find_element_by_name("aday")).select_by_visible_text("2")
-        wd.find_element_by_xpath("//div[@id='content']/form/select[3]/option[4]").click()
+        wd.find_element_by_xpath("//select[3]/option[4]").click()
         Select(wd.find_element_by_name("amonth")).select_by_visible_text("January")
-        wd.find_element_by_xpath("//div[@id='content']/form/select[4]/option[2]").click()
+        wd.find_element_by_xpath("//select[4]/option[2]").click()
         wd.find_element_by_name("ayear").click()
         wd.find_element_by_name("ayear").clear()
         wd.find_element_by_name("ayear").send_keys("1922")
         # confirm the entered data
         wd.find_element_by_xpath("//input[20]").click()
-        # return to home page
+
+    def return_to_home_page(self, wd):
         wd.find_element_by_link_text("home page").click()
-        # logout
+
+    def logout(self, wd):
         wd.find_element_by_link_text("Logout").click()
-    
+
+    def test_add_contact(self):
+        wd = self.wd
+        self.open_home_page(wd)
+        self.login(wd)
+        self.create_contact(wd)
+        self.return_to_home_page(wd)
+        self.logout(wd)
+
     def tearDown(self):
         self.wd.quit()
 
