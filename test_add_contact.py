@@ -10,11 +10,13 @@ class test_add_contact(unittest.TestCase):
         self.wd = webdriver.Firefox()
         self.wd.implicitly_wait(30)
 
-    def open_home_page(self, wd):
+    def open_home_page(self):
+        wd = self.wd
         wd.get("http://localhost/addressbook/")
 
-    def login(self, wd, username, password):
-        self.open_home_page(wd)
+    def login(self, username, password):
+        wd = self.wd
+        self.open_home_page()
         wd.find_element_by_name("user").click()
         wd.find_element_by_name("user").clear()
         wd.find_element_by_name("user").send_keys(username)
@@ -23,7 +25,8 @@ class test_add_contact(unittest.TestCase):
         wd.find_element_by_name("pass").send_keys(password)
         wd.find_element_by_xpath("//input[@value='Login']").click()
 
-    def create_contact(self, wd, contact):
+    def create_contact(self, contact):
+        wd = self.wd
         # init contact creation
         wd.find_element_by_link_text("add new").click()
         # fill contact form
@@ -113,21 +116,22 @@ class test_add_contact(unittest.TestCase):
         wd.find_element_by_name("ayear").send_keys(contact.ayear)
         # confirm the entered data
         wd.find_element_by_xpath("//input[20]").click()
-        self.return_to_home_page(wd)
+        self.return_to_home_page()
 
-    def return_to_home_page(self, wd):
+    def return_to_home_page(self):
+        wd = self.wd
         wd.find_element_by_link_text("home page").click()
 
-    def logout(self, wd):
+    def logout(self):
+        wd = self.wd
         wd.find_element_by_link_text("Logout").click()
 
     def test_add_contact(self):
-        wd = self.wd
-        self.login(wd, username="admin", password="secret")
-        self.create_contact(wd, Contact(firstname="Anna1", middlename="Anna2", lastname="Anna3", nickname="Knyazeva", photo="C:\\Users\Ann\Downloads\cat.jpg", title="Training",
+        self.login(username="admin", password="secret")
+        self.create_contact(Contact(firstname="Anna1", middlename="Anna2", lastname="Anna3", nickname="Knyazeva", photo="C:\\Users\Ann\Downloads\cat.jpg", title="Training",
                             company="Software-Testing", address="Barnaul", home_phone="123456", mobile_phone="9111111111", work_phone="123", fax="qwerty", email_1="test1@test.ru",
                             email_2="test2@test.ru", email_3="test3@test.ru", homepage="test.ru", bday="1", byear="1911", aday="2", ayear="1922", bmonth="March", amonth="January"))
-        self.logout(wd)
+        self.logout()
 
     def tearDown(self):
         self.wd.quit()
