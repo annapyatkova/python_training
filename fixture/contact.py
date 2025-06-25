@@ -96,3 +96,11 @@ class ContactHelper:
         # confirm the entered data
         wd.find_element_by_xpath("//input[20]").click()
         self.app.return_to_home_page()
+
+    def delete_first_contact(self):
+        wd = self.app.wd
+        # select first contact
+        wd.find_element_by_name("selected[]").click()
+        # submit deletion
+        wd.find_element_by_xpath("//input[@value='Delete']").click()
+        self.app.return_to_home_page()
