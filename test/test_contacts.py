@@ -2,6 +2,21 @@ import re
 from model.contact import Contact
 from random import randrange
 
+
+def test_all_contacts_from_home_page_with_db(app, db):
+    if len(db.get_contact_list()) == 0:
+        app.contact.create(Contact(nickname="Knyazeva"))
+    contact_from_db = sorted(db.get_contact_list(), key=Contact.id_or_max)
+    contact_from_home_page = sorted(app.contact.get_contact_list(), key=Contact.id_or_max)
+    assert len(contact_from_db) == len(contact_from_home_page)
+    for db, home_page in zip(contact_from_db, contact_from_home_page):
+        assert db.lastname == home_page.lastname
+        assert db.firstname == home_page.firstname
+        assert db.address == home_page.address
+        assert merge_emails_like_on_home_page(db) == home_page.all_emails_from_home_page
+        assert merge_phones_like_on_home_page(db) == home_page.all_phones_from_home_page
+
+
 def test_some_contacts_from_home_page(app):
     if app.contact.count() == 0:
         app.contact.create(Contact(nickname="Knyazeva"))
