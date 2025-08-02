@@ -3,7 +3,7 @@ from model.contact import Contact
 import random
 
 def test_delete_some_contact(app, db, check_ui):
-    if app.contact.count() == 0:
+    if len(db.get_contact_list()) == 0:
         app.contact.create(Contact(nickname="Knyazeva"))
     old_contact = db.get_contact_list()
     contact = random.choice(old_contact)
