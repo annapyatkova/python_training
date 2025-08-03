@@ -39,6 +39,11 @@ class ORMFixture():
     def get_group_list(self):
         return self.convert_groups_to_model(select(g for g in ORMFixture.ORMGroup))
 
+    @db_session
+    def get_groups_contact(self, contact):
+        orm_contact = list(select(c for c in ORMFixture.ORMContact if c.id == contact.id))[0]
+        return self.convert_groups_to_model(orm_contact.groups)
+
     def convert_contacts_to_model(self, contacts):
         def convert(contact):
             return Contact(id=str(contact.id), firstname=contact.firstname, lastname=contact.lastname)
@@ -50,11 +55,29 @@ class ORMFixture():
 
     @db_session
     def get_contacts_in_group(self, group):
-       orm_group = list(select(g for g in ORMFixture.ORMGroup if g.id == group.id))[0]
-       return self.convert_contacts_to_model(orm_group.contacts)
+        orm_group = list(select(g for g in ORMFixture.ORMGroup if g.id == group.id))[0]
+        return self.convert_contacts_to_model(orm_group.contacts)
 
     @db_session
     def get_contacts_not_in_group(self, group):
         orm_group = list(select(g for g in ORMFixture.ORMGroup if g.id == group.id))[0]
         return self.convert_contacts_to_model(
             select(c for c in ORMFixture.ORMContact if c.deprecated is None and orm_group not in c.groups))
+
+    @db_session
+    def get_contacts_without_group(self):
+        orm_contacts = list(select(c for c in ORMFixture.ORMContact))
+        contacts_without_group = []
+        for orm_contact in orm_contacts:
+            if self.convert_groups_to_model(orm_contact.groups) == []:
+                contacts_without_group.append(orm_contact)
+        return self.convert_contacts_to_model(contacts_without_group)
+
+    @db_session
+    def get_contacts_with_group(self):
+        orm_contacts = list(select(c for c in ORMFixture.ORMContact))
+        contacts_with_group = []
+        for orm_contact in orm_contacts:
+            if self.convert_groups_to_model(orm_contact.groups) != []:
+                contacts_with_group.append(orm_contact)
+        return self.convert_contacts_to_model(contacts_with_group)

@@ -16,7 +16,6 @@ class ContactHelper:
 
     def select_contact_by_id(self, id):
         wd = self.app.wd
-        #wd.find_element_by_css_selector("input[value='%s']" % id).click()
         wd.find_element_by_css_selector("[href='edit.php?id=%i']" % int(id)).click()
 
     def change_field_value(self, field_name, text):
@@ -117,6 +116,27 @@ class ContactHelper:
         self.fill_contact_form(new_contact_data)
         # confirm the entered data
         wd.find_element_by_xpath("//input[21]").click()
+        self.app.return_to_home_page()
+        self.contact_cache = None
+
+    def add_to_group(self, contact_id, group_id):
+        wd = self.app.wd
+        self.app.open_home_page()
+        # select contact
+        wd.find_element_by_css_selector("input[value='%s']" % contact_id).click()
+        wd.find_element_by_xpath("//select[@name='to_group']").click()
+        wd.find_element_by_xpath("//select[@name='to_group']/option[@value='%s']" % group_id).click()
+        wd.find_element_by_xpath("//input[@name='add']").click()
+        self.app.return_to_home_page()
+        self.contact_cache = None
+
+    def remove_from_group(self, contact_id, group_id):
+        wd = self.app.wd
+        self.app.open_home_page()
+        wd.find_element_by_name("group").click()
+        wd.find_element_by_xpath("//select[@name='group']/option[@value='%s']" % group_id).click()
+        wd.find_element_by_css_selector("input[value='%s']" % contact_id).click()
+        wd.find_element_by_name('remove').click()
         self.app.return_to_home_page()
         self.contact_cache = None
 
